@@ -1,4 +1,6 @@
 ﻿using SimpleToDoListDDD.Core.Results;
+using SimpleToDoListDDD.Core.Validations;
+using SimpleToDoListDDD.Core.Validations.Entries;
 using SimpleToDoListDDD.Domain.ValueTypes;
 
 namespace SimpleToDoListDDD.Domain.ToDoItems
@@ -18,13 +20,13 @@ namespace SimpleToDoListDDD.Domain.ToDoItems
 
         public static Result<SimpleToDoItem> Create(Guid id, Title title, Description description)
         {
-            if (title == null)
-                return Result<SimpleToDoItem>.Failure("SimpleToDoItem.RequiredTitle");
+            var validator = new SimpleValidator()
+                .Validate(ObjectValidations.IsNotNull("SimpleToDoItem.RequiredTitle", title))
+                .Validate(ObjectValidations.IsNotNull("SimpleToDoItem.RequiredDescription", description));
 
-            if (description == null)
-                return Result<SimpleToDoItem>.Failure("SimpleToDoItem.RequiredDescription");
-
-            return Result<SimpleToDoItem>.Success(new SimpleToDoItem(id, title, description));
+            return validator.IsValid
+                ? Result<SimpleToDoItem>.Success(new SimpleToDoItem(id, title, description))
+                : Result<SimpleToDoItem>.Failure(validator.Errors);
         }
 
         public SimpleToDoItem UpdateTitle(Title title)

@@ -12,7 +12,12 @@
             IsSuccess = isSuccess;
             _results = [errorKey];
         }
+
         protected internal Result(bool isSuccess, params string[] errorKeys)
+            : this(isSuccess, (IEnumerable<string>)errorKeys)
+        { }
+
+        protected internal Result(bool isSuccess, IEnumerable<string> errorKeys)
         {
             IsSuccess = isSuccess;
             _results = [.. errorKeys];
@@ -26,6 +31,11 @@
         public static Result Failure(string errorKey)
         {
             return new Result(false, errorKey);
+        }
+
+        public static Result Failure(IEnumerable<string> errorKeys)
+        {
+            return new Result(false, errorKeys);
         }
     }
 }

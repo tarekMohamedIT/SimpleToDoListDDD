@@ -32,7 +32,7 @@ namespace SimpleToDoListDDD.Tests.ValueTypesTests
         {
             var creationResult = Title.Create("te");
             Assert.IsFalse(creationResult.IsSuccess);
-            Assert.AreEqual("Title.TooShort", creationResult.ErrorKeys.First());
+            Assert.AreEqual("Title.InvalidLength", creationResult.ErrorKeys.First());
         }
     }
 }

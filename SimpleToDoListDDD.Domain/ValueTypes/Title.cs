@@ -1,5 +1,6 @@
-﻿using SimpleToDoListDDD.Core.Extensions;
-using SimpleToDoListDDD.Core.Results;
+﻿using SimpleToDoListDDD.Core.Results;
+using SimpleToDoListDDD.Core.Validations;
+using SimpleToDoListDDD.Core.Validations.Entries;
 
 namespace SimpleToDoListDDD.Domain.ValueTypes
 {
@@ -14,11 +15,12 @@ namespace SimpleToDoListDDD.Domain.ValueTypes
 
         public static Result<Title> Create(string title)
         {
-            if (title.IsNullOrWhiteSpace())
-                return Result<Title>.Failure("Title.Required");
+            var validator = new SimpleValidator().ValidateOneOf(
+                StringValidations.IsNotNullOrEmpty("Title.Required", title),
+                StringValidations.IsLengthInRange("Title.InvalidLength", title, 3, 200));
 
-            if (title.Length < 3)
-                return Result<Title>.Failure("Title.TooShort");
+            if (!validator.IsValid)
+                return Result<Title>.Failure(validator.Errors);
 
             return Result<Title>.Success(new Title(title));
         }

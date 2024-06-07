@@ -1,5 +1,6 @@
 using SimpleToDoListDDD.Domain.ToDoItems;
 using SimpleToDoListDDD.Domain.ValueTypes;
+using System.Linq;
 
 namespace SimpleToDoListDDD.Tests
 {
@@ -41,6 +42,17 @@ namespace SimpleToDoListDDD.Tests
             Assert.AreEqual("SimpleToDoItem.RequiredDescription", creationResult.ErrorKeys.First());
         }
 
+        [TestMethod]
+        public void SimpleToDoItem_IfNullParametersArePassed_WillHaveUnsuccessfulResult()
+        {
+            Title title = null!;
+            Description description = null!;
 
+            var creationResult = SimpleToDoItem.Create(Guid.Empty, title, description);
+
+            Assert.IsFalse(creationResult.IsSuccess);
+            Assert.AreEqual("SimpleToDoItem.RequiredTitle", creationResult.ErrorKeys.ElementAt(0));
+            Assert.AreEqual("SimpleToDoItem.RequiredDescription", creationResult.ErrorKeys.ElementAt(1));
+        }
     }
 }
