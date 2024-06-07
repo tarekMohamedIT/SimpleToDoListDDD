@@ -2,7 +2,20 @@
 {
     public sealed class Result<T> : Result
     {
-        public T? Value { get; set; }
+        private T? value;
+
+        public T? Value
+        {
+            get
+            {
+                if (!IsSuccess)
+                    throw new ResultFailedException(ErrorKey);
+
+                return value;
+            }
+
+            set => this.value = value;
+        }
 
         private Result(bool isSuccess, string errorKey, T? value)
             : base(isSuccess, errorKey)
