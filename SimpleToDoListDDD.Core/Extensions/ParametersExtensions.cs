@@ -10,6 +10,14 @@
 
             return param;
         }
+        
+        public static T ThrowIfDefaultArgument<T>(this T param, string paramName)
+        {
+            if (param == null || param.Equals(default))
+                throw new ArgumentNullException(paramName);
+
+            return param;
+        }
 
         public static string ThrowIfNullOrEmptyArgument(this string param, string paramName)
         {

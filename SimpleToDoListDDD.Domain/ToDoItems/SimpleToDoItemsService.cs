@@ -1,19 +1,34 @@
-﻿using SimpleToDoListDDD.Core.Results;
+﻿using SimpleToDoListDDD.Core.Events;
+using SimpleToDoListDDD.Core.Extensions;
+using SimpleToDoListDDD.Core.Results;
+using SimpleToDoListDDD.Domain.ToDoItems.Events;
 
 namespace SimpleToDoListDDD.Domain.ToDoItems
 {
-    public class SimpleToDoItemsService(ISimpleToDoItemsRepository repository)
+    public class SimpleToDoItemsService
     {
-        private readonly ISimpleToDoItemsRepository repository = repository;
+        private readonly ISimpleToDoItemsRepository _repository;
+        private readonly IEventDispatcher _eventDispatcher;
+
+        public SimpleToDoItemsService(
+            ISimpleToDoItemsRepository repository,
+            IEventDispatcher eventDispatcher)
+        {
+            _repository = repository.ThrowIfNullArgument(nameof(repository));
+            _eventDispatcher = eventDispatcher.ThrowIfNullArgument(nameof(eventDispatcher));
+        }
 
         public IEnumerable<SimpleToDoItem> GetAll()
         {
-            return repository.GetAll();
+            return _repository.GetAll();
         }
 
         public Result<SimpleToDoItem> GetById(Guid id)
         {
-            SimpleToDoItem item = repository.GetById(id);
+            if (id == Guid.Empty)
+                return Result<SimpleToDoItem>.Failure("SimpleToDoItem.InvalidId");
+
+            SimpleToDoItem item = _repository.GetById(id);
 
             return item != null
                 ? Result<SimpleToDoItem>.Success(item)
@@ -25,17 +40,13 @@ namespace SimpleToDoListDDD.Domain.ToDoItems
             if (item == null)
                 return Result.Failure("SimpleToDoItem.Required");
 
-            if (item.Id == Guid.Empty)
-                return Create(item);
-
-            else return Edit(item);
+            return item.Id == Guid.Empty ? Create(item) : Edit(item);
         }
 
         private Result Create(SimpleToDoItem item)
         {
-            repository.Save(item);
-
-            return Result.Success();
+            var createEvent = new ToDoItemCreatedEvent(item);
+            return _eventDispatcher.Dispatch(createEvent);
         }
 
         private Result Edit(SimpleToDoItem item)
@@ -45,13 +56,13 @@ namespace SimpleToDoListDDD.Domain.ToDoItems
             if (!itemFromDbResult.IsSuccess)
                 return itemFromDbResult;
 
-            var itemToBeSaved = itemFromDbResult.Value!
-                .UpdateTitle(item.Title)
-                .UpdateDescription(item.Description);
+            var itemToBeSaved = SimpleToDoItem.Create(
+                itemFromDbResult.Value!.Id,
+                item.Title,
+                item.Description);
 
-            repository.Save(itemToBeSaved);
-
-            return Result.Success();
+            var updateEvent = new ToDoItemUpdatedEvent(itemFromDbResult.Value, itemToBeSaved.Value!);
+            return _eventDispatcher.Dispatch(updateEvent);
         }
     }
 }

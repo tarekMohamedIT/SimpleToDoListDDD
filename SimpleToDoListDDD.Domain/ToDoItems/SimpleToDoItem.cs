@@ -1,4 +1,5 @@
-﻿using SimpleToDoListDDD.Core.Results;
+﻿using SimpleToDoListDDD.Core.Extensions;
+using SimpleToDoListDDD.Core.Results;
 using SimpleToDoListDDD.Core.Validations;
 using SimpleToDoListDDD.Core.Validations.Entries;
 using SimpleToDoListDDD.Domain.ValueTypes;
@@ -13,9 +14,9 @@ namespace SimpleToDoListDDD.Domain.ToDoItems
 
         private SimpleToDoItem(Guid id, Title title, Description description)
         {
-            Id = id;
-            Title = title;
-            Description = description;
+            Id = id.ThrowIfDefaultArgument(nameof(id));
+            Title = title.ThrowIfNullArgument(nameof(title));
+            Description = description.ThrowIfNullArgument(nameof(description));
         }
 
         public static Result<SimpleToDoItem> Create(Guid id, Title title, Description description)
@@ -31,14 +32,14 @@ namespace SimpleToDoListDDD.Domain.ToDoItems
 
         public SimpleToDoItem UpdateTitle(Title title)
         {
-            this.Title = title;
+            Title = title.ThrowIfNullArgument(nameof(title));
 
             return this;
         }
 
         public SimpleToDoItem UpdateDescription(Description description)
         {
-            this.Description = description;
+            Description = description.ThrowIfNullArgument(nameof(description));
 
             return this;
         }

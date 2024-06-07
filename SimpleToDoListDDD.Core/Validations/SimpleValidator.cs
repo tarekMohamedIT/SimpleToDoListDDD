@@ -1,5 +1,4 @@
-﻿using SimpleToDoListDDD.Core.Extensions;
-using SimpleToDoListDDD.Core.Results;
+﻿using SimpleToDoListDDD.Core.Results;
 using SimpleToDoListDDD.Core.Validations.Entries;
 
 namespace SimpleToDoListDDD.Core.Validations

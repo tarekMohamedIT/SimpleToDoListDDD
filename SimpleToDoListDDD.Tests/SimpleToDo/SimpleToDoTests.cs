@@ -2,7 +2,7 @@ using SimpleToDoListDDD.Domain.ToDoItems;
 using SimpleToDoListDDD.Domain.ValueTypes;
 using System.Linq;
 
-namespace SimpleToDoListDDD.Tests
+namespace SimpleToDoListDDD.Tests.SimpleToDo
 {
     [TestClass]
     public class SimpleToDoTests
