@@ -4,12 +4,18 @@
     {
         public bool IsSuccess { get; }
 
-        public string ErrorKey { get; }
+        private readonly List<string> _results;
+        public IEnumerable<string> ErrorKeys => _results.AsReadOnly();
 
         protected internal Result(bool isSuccess, string errorKey)
         {
             IsSuccess = isSuccess;
-            ErrorKey = errorKey;
+            _results = [errorKey];
+        }
+        protected internal Result(bool isSuccess, params string[] errorKeys)
+        {
+            IsSuccess = isSuccess;
+            _results = [.. errorKeys];
         }
 
         public static Result Success()

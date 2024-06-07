@@ -26,7 +26,7 @@ namespace SimpleToDoListDDD.Tests
             var creationResult = SimpleToDoItem.Create(Guid.Empty, title!, description!);
 
             Assert.IsFalse(creationResult.IsSuccess);
-            Assert.AreEqual("SimpleToDoItem.RequiredTitle", creationResult.ErrorKey);
+            Assert.AreEqual("SimpleToDoItem.RequiredTitle", creationResult.ErrorKeys.First());
         }
 
         [TestMethod]
@@ -38,7 +38,7 @@ namespace SimpleToDoListDDD.Tests
             var creationResult = SimpleToDoItem.Create(Guid.Empty, title!, description!);
 
             Assert.IsFalse(creationResult.IsSuccess);
-            Assert.AreEqual("SimpleToDoItem.RequiredDescription", creationResult.ErrorKey);
+            Assert.AreEqual("SimpleToDoItem.RequiredDescription", creationResult.ErrorKeys.First());
         }
 
 

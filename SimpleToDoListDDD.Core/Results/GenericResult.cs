@@ -9,7 +9,7 @@
             get
             {
                 if (!IsSuccess)
-                    throw new ResultFailedException(ErrorKey);
+                    throw new ResultFailedException(ErrorKeys);
 
                 return value;
             }
