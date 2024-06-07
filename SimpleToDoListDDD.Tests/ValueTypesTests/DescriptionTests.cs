@@ -17,6 +17,7 @@ namespace SimpleToDoListDDD.Tests.ValueTypesTests
         {
             var creationResult = Description.Create(null!);
             Assert.IsFalse(creationResult.IsSuccess);
+            Assert.AreEqual("Description.Required", creationResult.ErrorKey);
         }
     }
 }
