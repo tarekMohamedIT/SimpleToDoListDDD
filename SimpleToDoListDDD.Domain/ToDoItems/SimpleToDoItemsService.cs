@@ -45,6 +45,8 @@ namespace SimpleToDoListDDD.Domain.ToDoItems
 
         private Result Create(SimpleToDoItem item)
         {
+            _repository.Save(item);
+
             var createEvent = new ToDoItemCreatedEvent(item);
             return _eventDispatcher.Dispatch(createEvent);
         }
@@ -56,12 +58,16 @@ namespace SimpleToDoListDDD.Domain.ToDoItems
             if (!itemFromDbResult.IsSuccess)
                 return itemFromDbResult;
 
-            var itemToBeSaved = SimpleToDoItem.Create(
+            var itemCreationResult = SimpleToDoItem.Create(
                 itemFromDbResult.Value!.Id,
                 item.Title,
                 item.Description);
 
-            var updateEvent = new ToDoItemUpdatedEvent(itemFromDbResult.Value, itemToBeSaved.Value!);
+            if (!itemCreationResult.IsSuccess) return itemCreationResult;
+
+            _repository.Save(itemCreationResult.Value!);
+
+            var updateEvent = new ToDoItemUpdatedEvent(itemFromDbResult.Value, itemCreationResult.Value!);
             return _eventDispatcher.Dispatch(updateEvent);
         }
     }

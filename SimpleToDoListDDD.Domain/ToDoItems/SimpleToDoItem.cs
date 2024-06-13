@@ -8,7 +8,7 @@ namespace SimpleToDoListDDD.Domain.ToDoItems
 {
     public sealed class SimpleToDoItem
     {
-        public Guid Id { get; }
+        public Guid Id { get; private set; }
         public Title Title { get; private set; }
         public Description Description { get; private set; }
 
@@ -28,6 +28,15 @@ namespace SimpleToDoListDDD.Domain.ToDoItems
             return validator.IsValid
                 ? Result<SimpleToDoItem>.Success(new SimpleToDoItem(id, title, description))
                 : Result<SimpleToDoItem>.Failure(validator.Errors);
+        }
+
+        public Result ChangeId(Guid id)
+        {
+            if (Id != Guid.Empty)
+                return Result.Failure("SimpleToDoItem.IdAlreadySet");
+
+            Id = id;
+            return Result.Success();
         }
 
         public SimpleToDoItem UpdateTitle(Title title)
