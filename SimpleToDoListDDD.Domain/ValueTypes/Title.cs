@@ -16,8 +16,8 @@ namespace SimpleToDoListDDD.Domain.ValueTypes
         public static Result<Title> Create(string title)
         {
             var validator = new SimpleValidator().ValidateOneOf(
-                StringValidations.IsNotNullOrEmpty("Title.Required", title),
-                StringValidations.IsLengthInRange("Title.InvalidLength", title, 3, 200));
+                StringValidationEntries.IsNotNullOrEmpty("Title.Required", title),
+                StringValidationEntries.IsLengthInRange("Title.InvalidLength", title, 3, 200));
 
             if (!validator.IsValid)
                 return Result<Title>.Failure(validator.Errors);

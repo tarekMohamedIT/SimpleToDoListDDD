@@ -24,7 +24,7 @@ namespace SimpleToDoListDDD.Tests.SimpleToDo
             var handler = new LoggingEventHandler(logger);
 
             dispatcher.RegisterHandler<ToDoItemCreatedEvent>(handler);
-            dispatcher.RegisterHandler(new ToDoItemCreatedEventHandler(logger, repository));
+            dispatcher.RegisterHandler(new ToDoItemCreatedEventHandler(logger));
             dispatcher.RegisterHandler<ToDoItemUpdatedEvent>(handler);
 
             service = new SimpleToDoItemsService(repository, dispatcher);
@@ -41,7 +41,7 @@ namespace SimpleToDoListDDD.Tests.SimpleToDo
             var result = service.Save(creationResult.Value!);
 
             Assert.IsTrue(result.IsSuccess);
-            Assert.AreEqual(3, logger.LogMessages.Count);
+            Assert.AreEqual(2, logger.LogMessages.Count);
             Assert.AreEqual(1, service.GetAll().Count());
         }
     }
